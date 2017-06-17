@@ -1,4 +1,4 @@
-package com.jwieczorek;
+package com.fuelalg;
 
 public class Main {
 
