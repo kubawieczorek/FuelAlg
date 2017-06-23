@@ -7,29 +7,31 @@ import java.util.ArrayList;
  */
 public class FuelAlg {
 
+    public double maxIterations;
+
 
     public ArrayList<Double> outputFluidVolumes;
     public ArrayList<Double> outputFluidTemps;
 
-    private ArrayList<Double> ambientTempList;
-    private double startFluidTemp;
-    private double startFluidVolume;
-    private double newFluidVolume;
-    private double newFluidTemp;
-    private double newAmbientTemp;
-    private double oldAmbientTemp;
-    private double oldFluidTemp;
-    private double containerTemp;
+    public ArrayList<Double> ambientTempList;
+    public double startFluidTemp;
+    public double startFluidVolume;
+    public double newFluidVolume;
+    public double newFluidTemp;
+    public double newAmbientTemp;
+    public double oldAmbientTemp;
+    public double oldFluidTemp;
+    public double containerTemp;
 
 
     // Wspolczynnik rozszerzalnosci cieplnej
-    private double thermalExpansionCoefficient;
+    public double thermalExpansionCoefficient;
     // Cieplo wlasciwe
-    private double molarHeatCapacity;
+    public double molarHeatCapacity;
     // Pole pojemnika na ciecz
-    private double containerArea;
+    public double containerArea;
     // Współczynnik wnikania ciepla cieczy
-    private double fluidNusseltNumber;
+    public double fluidNusseltNumber;
 
 
     public FuelAlg(double _startFluidTemp,
@@ -48,7 +50,17 @@ public class FuelAlg {
         fluidNusseltNumber = _fluidNusseltNumber;
     }
 
-    private void run(){
+    public FuelAlg(){
+        maxIterations = 100;
+        startFluidTemp = 15;
+        startFluidVolume = 100;
+        ambientTempList = new ArrayList<Double>();
+        for(int  i = 0; i < maxIterations ; i++){
+            ambientTempList.add((15.0 + i/10.0));
+        }
+    }
+
+    public void Run(){
         int iteration = 0;
         newFluidVolume = startFluidVolume;
         newFluidTemp = startFluidTemp;
