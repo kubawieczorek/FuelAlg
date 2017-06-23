@@ -20,13 +20,26 @@ public class FuelAlg {
     private double oldAmbientTemp;
     private double oldFluidTemp;
 
-    private double thermalExpansionCoefficient;
 
-    public FuelAlg(double _startFluidTemp, double _startFluidVolume,ArrayList<Double> _ambientTempList, double _thermalExpansionCoefficient ){
+    // Wspolczynnik rozszerzalnosci cieplnej
+    private double thermalExpansionCoefficient;
+    // Cieplo wlasciwe
+    private double molarHeatCapacity;
+    // Pole pojemnika na ciecz
+    private double containerArea;
+
+    public FuelAlg(double _startFluidTemp,
+                   double _startFluidVolume,
+                   ArrayList<Double> _ambientTempList,
+                   double _thermalExpansionCoefficient,
+                   double _molarHeatCapacity,
+                   double _containerArea){
         startFluidTemp = _startFluidTemp;
         startFluidVolume = _startFluidVolume;
         ambientTempList = _ambientTempList;
         thermalExpansionCoefficient = _thermalExpansionCoefficient;
+        molarHeatCapacity = _molarHeatCapacity;
+        containerArea = _containerArea;
     }
 
     private void run(){
@@ -37,15 +50,20 @@ public class FuelAlg {
 
         while(true){
             iteration++;
+
+            // Zaktualizowanie danych wyjsciowych
             outputFluidTemps.add(newFluidTemp);
             outputFluidTemps.add(newFluidVolume);
 
+            // Zaktualizowanie temperatury otoczenia
             oldAmbientTemp = newAmbientTemp;
             newAmbientTemp = ambientTempList.get(iteration);
 
+            // Obliczenie nowej temperatury cieczy
             oldFluidTemp = newFluidTemp;
             newFluidTemp = calculateFluidTemp(newAmbientTemp, newFluidTemp);
 
+            //Obliczenie nowej objetosci cieczy
             newFluidVolume = calculateFluidVolume(newFluidVolume, newFluidTemp, oldFluidTemp, thermalExpansionCoefficient);
         }
 
