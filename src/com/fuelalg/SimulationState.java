@@ -19,4 +19,11 @@ public class SimulationState {
         s.ambientTemperature = ambientTemperature;
         return s;
     }
+
+    public void verify()
+    {
+        if(fuelVolume < 0) throw new IllegalArgumentException("fuelVolume < 0");
+        if(fuelTemperature < -273.15) throw new IllegalArgumentException("fuelTemperature < -273.15");
+        if(ambientTemperature < -273.15) throw new IllegalArgumentException("ambientTemperature < -273.15");
+    }
 }

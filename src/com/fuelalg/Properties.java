@@ -31,5 +31,16 @@ public class Properties {
         return p;
     }
 
+    public void verify()
+    {
+        if (tankVolume <=0) throw new IllegalArgumentException("tankVolume <=0");
+        if (tankSurfaceArea <= 0) throw new IllegalArgumentException("tankSurfaceArea <=0");
+        if (tankHeatConductionCoefficient <=0) throw new IllegalArgumentException("tankHeatConductionCoefficient <=0");
+        if (fuelThermalExpansionCoefficient <=0 ) throw new IllegalArgumentException("fuelThermalExpansionCoefficient <=0 ");
+        if (fuelHeatCapacity <=0) throw new IllegalArgumentException("fuelHeatCapacity <=0");
+        if (fuelDensity <= 0) throw new IllegalArgumentException("fuelDensity <= 0");
+        if (fuelDensityBaseTemperature < -273.15) throw new IllegalArgumentException("fuelDensityBaseTemperature < -273.15");
+    }
+
 
 }

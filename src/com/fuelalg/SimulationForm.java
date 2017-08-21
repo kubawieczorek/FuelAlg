@@ -64,36 +64,81 @@ public class SimulationForm extends JFrame{
 
         setAmbientTemperatureButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String val = JOptionPane.showInputDialog( "Enter new ambient temperature:", fuelAlg.getAmbientTemperature());
-                fuelAlg.setAmbientTemperature(Double.parseDouble(val));
-                updateData();
+                onSetAmbientTemperature();
             }
         });
 
         addInflowButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                FuelInflow f = new FuelInflow();
-                f.litresPerSecond = Double.parseDouble(JOptionPane.showInputDialog( "litersPersecond:", 1));
-                f.limitVolume = Double.parseDouble(JOptionPane.showInputDialog( "limitVolume:", 1));
-                f.temperature = Double.parseDouble(JOptionPane.showInputDialog( "temperature:", 1));
-                fuelAlg.addInflow(f);
-                updateData();
+                onAddInflow();
             }
         });
 
         addOutflowButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                FuelOutflow f = new FuelOutflow();
-                f.litresPerSecond = Double.parseDouble(JOptionPane.showInputDialog( "litersPersecond:", 1));
-                f.limitVolume = Double.parseDouble(JOptionPane.showInputDialog( "limitVolume:", 1));
-                fuelAlg.addOutflow(f);
-                updateData();
+                onAddOutflow();
             }
         });
 
         volumeBar.setMaximum(1000);
 
 
+    }
+
+    private void onSetAmbientTemperature()
+    {
+        try{
+            String val = JOptionPane.showInputDialog( "Enter new ambient temperature:", fuelAlg.getAmbientTemperature());
+            fuelAlg.setAmbientTemperature(Double.parseDouble(val));
+            updateData();
+        }
+        catch(NumberFormatException e)
+        {
+            JOptionPane.showMessageDialog(this, "Number format error: " + e.getMessage());
+        }
+        catch(IllegalArgumentException e)
+        {
+            JOptionPane.showMessageDialog(this, "Bad number value: " + e.getMessage());
+        }
+    }
+
+    private void onAddInflow()
+    {
+        try{
+            FuelInflow f = new FuelInflow();
+            f.litresPerSecond = Double.parseDouble(JOptionPane.showInputDialog( "litersPersecond:", 1));
+            f.limitVolume = Double.parseDouble(JOptionPane.showInputDialog( "limitVolume:", 1));
+            f.temperature = Double.parseDouble(JOptionPane.showInputDialog( "temperature:", 1));
+            fuelAlg.addInflow(f);
+            updateData();
+        }
+        catch(NumberFormatException e)
+        {
+            JOptionPane.showMessageDialog(this, "Number format error: " + e.getMessage());
+        }
+        catch(IllegalArgumentException e)
+        {
+            JOptionPane.showMessageDialog(this, "Bad number value: " + e.getMessage());
+        }
+    }
+
+    private void onAddOutflow()
+    {
+        try{
+            FuelOutflow f = new FuelOutflow();
+            f.litresPerSecond = Double.parseDouble(JOptionPane.showInputDialog( "litersPersecond:", 1));
+            f.limitVolume = Double.parseDouble(JOptionPane.showInputDialog( "limitVolume:", 1));
+            fuelAlg.addOutflow(f);
+            updateData();
+        }
+        catch(NumberFormatException e)
+        {
+            JOptionPane.showMessageDialog(this, "Number format error: " + e.getMessage());
+        }
+        catch(IllegalArgumentException e)
+        {
+            JOptionPane.showMessageDialog(this, "Bad number value: " + e.getMessage());
+        }
     }
 
     private void updateData()

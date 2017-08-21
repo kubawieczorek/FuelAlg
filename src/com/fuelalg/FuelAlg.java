@@ -35,6 +35,8 @@ public class FuelAlg {
 
     public FuelAlg(SimulationState startState,  Properties constantProperties)
     {
+        startState.verify();
+        constantProperties.verify();
         currentState = startState.clone();
         newState = currentState.clone();
         properties = constantProperties.clone();
@@ -43,9 +45,18 @@ public class FuelAlg {
     }
 
 
-    public void setAmbientTemperature(double t){newState.ambientTemperature = t;}
-    public void addInflow(FuelInflow i){inflows.add(i);}
-    public void addOutflow(FuelOutflow o){outflows.add(o);}
+    public void setAmbientTemperature(double t){
+        if(t < -273.15) throw new IllegalArgumentException("ambientTemperature < -273.15");
+        newState.ambientTemperature = t;
+    }
+    public void addInflow(FuelInflow i){
+        i.verify();
+        inflows.add(i);
+    }
+    public void addOutflow(FuelOutflow o){
+        o.verify();
+        outflows.add(o);
+    }
 
     public double getFuelVolume(){ return currentState.fuelVolume; }
     public double getFuelTemperature(){ return currentState.fuelTemperature;}

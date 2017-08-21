@@ -57,6 +57,7 @@ public class StartParametersForm extends JFrame{
 
     private void onOK() {
         // add your code here
+        try{
         Properties prop = new Properties();
         prop.tankVolume = Double.parseDouble(tankVolumeText.getText());
         prop.tankSurfaceArea = Double.parseDouble(tankSurfaceAreaText.getText());
@@ -66,10 +67,14 @@ public class StartParametersForm extends JFrame{
         prop.fuelDensity = Double.parseDouble(fuelDensityText.getText());
         prop.fuelDensityBaseTemperature =Double.parseDouble(fuelDensityBaseTemperatureText.getText());
 
+        prop.verify();
+
         SimulationState state = new SimulationState();
         state.fuelTemperature = Double.parseDouble(fuelTemperatureText.getText());
         state.fuelVolume = Double.parseDouble(fuelVolumeText.getText());
         state.ambientTemperature = Double.parseDouble(ambientTemperatureText.getText());
+
+        state.verify();
 
         SimulationForm form = new SimulationForm(prop, state);
         form.pack();
@@ -78,6 +83,15 @@ public class StartParametersForm extends JFrame{
         System.out.println(fuelTemperatureText);
 
         dispose();
+        }
+        catch(NumberFormatException e)
+        {
+            JOptionPane.showMessageDialog(this, "Number format error: " + e.getMessage());
+        }
+        catch(IllegalArgumentException e)
+        {
+            JOptionPane.showMessageDialog(this, "Bad number value: " + e.getMessage());
+        }
     }
 
     private void onCancel() {
