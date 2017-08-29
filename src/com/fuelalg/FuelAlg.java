@@ -1,130 +1,143 @@
-package com.fuelalg;
 
-import java.util.ArrayList;
+        package com.fuelalg;
+
+        import java.util.ArrayList;
+        import java.util.Iterator;
 
 /**
  * Created by Kuba on 22.06.2017.
  */
 public class FuelAlg {
 
-    public double maxIterations;
+    //private ArrayList<Double> ambientTempList;
+    //private double startFluidTemp;
+    //private double startFluidVolume;
+    //private double newFluidVolume;
+    //private double newFluidTemp;
+    //private double newAmbientTemp;
+    //private double oldAmbientTemp;
+    //private double oldFluidTemp;
 
-
-    public ArrayList<Double> outputFluidVolumes;
-    public ArrayList<Double> outputFluidTemps;
-
-    public ArrayList<Double> ambientTempList;
-    public double startFluidTemp;
-    public double startFluidVolume;
-    public double newFluidVolume;
-    public double newFluidTemp;
-    public double newAmbientTemp;
-    public double oldAmbientTemp;
-    public double oldFluidTemp;
-    public double containerTemp;
-
-
-    // Wspolczynnik rozszerzalnosci cieplnej
-    public double thermalExpansionCoefficient;
-    // Cieplo wlasciwe
-    public double molarHeatCapacity;
-    // Pole pojemnika na ciecz
-    public double containerArea;
-    // Współczynnik wnikania ciepla cieczy
-    public double fluidNusseltNumber;
-
-
-    public FuelAlg(double _startFluidTemp,
-                   double _startFluidVolume,
-                   ArrayList<Double> _ambientTempList,
-                   double _thermalExpansionCoefficient,
-                   double _molarHeatCapacity,
-                   double _containerArea,
-                   double _fluidNusseltNumber){
-        startFluidTemp = _startFluidTemp;
-        startFluidVolume = _startFluidVolume;
-        ambientTempList = _ambientTempList;
-        thermalExpansionCoefficient = _thermalExpansionCoefficient;
-        molarHeatCapacity = _molarHeatCapacity;
-        containerArea = _containerArea;
-        fluidNusseltNumber = _fluidNusseltNumber;
+    public double getDt() {
+        return dt;
     }
 
-    public FuelAlg(){
-        maxIterations = 100;
-        startFluidTemp = 15;
-        startFluidVolume = 100;
-        ambientTempList = new ArrayList<Double>();
-        for(int  i = 0; i < maxIterations ; i++){
-            ambientTempList.add((15.0 + i/10.0));
+    public void setDt(double dt) {
+        this.dt = dt;
+    }
+    //krok symulacji w sekundach
+    private double dt = 0.1;
+
+    private Properties properties;
+    private SimulationState currentState;
+    private SimulationState newState;
+    public ArrayList<FuelInflow> inflows;
+    public ArrayList<FuelOutflow> outflows;
+
+    public FuelAlg(SimulationState startState,  Properties constantProperties)
+    {
+        startState.verify();
+        constantProperties.verify();
+        currentState = startState.clone();
+        newState = currentState.clone();
+        properties = constantProperties.clone();
+        inflows = new ArrayList<FuelInflow>();
+        outflows = new ArrayList<FuelOutflow>();
+    }
+
+
+    public void setAmbientTemperature(double t){
+        if(t < -273.15) throw new IllegalArgumentException("ambientTemperature < -273.15");
+        newState.ambientTemperature = t;
+    }
+    public void addInflow(FuelInflow i){
+        i.verify();
+        inflows.add(i);
+    }
+    public void addOutflow(FuelOutflow o){
+        o.verify();
+        outflows.add(o);
+    }
+
+    public double getFuelVolume(){ return currentState.fuelVolume; }
+    public double getFuelTemperature(){ return currentState.fuelTemperature;}
+    public double getAmbientTemperature(){return currentState.ambientTemperature;}
+
+    public void doIteration()
+    {
+        processInflows();
+        processOutflows();
+        processHeatExchange();
+        currentState = newState;
+        newState = currentState.clone();
+    }
+
+    private void processInflows()
+    {
+        for(Iterator<FuelInflow> iter = inflows.listIterator(); iter.hasNext();)
+        {
+            FuelInflow i = iter.next();
+            double addedV = i.litresPerSecond * dt;
+            i.limitVolume -= addedV;
+            if(i.limitVolume <= 0 ){
+                addedV += i.limitVolume;
+                iter.remove();
+            }
+            double baseMass = getMass(newState.fuelVolume, newState.fuelTemperature);
+            double addedMass = getMass(addedV ,i.temperature);
+            double finalMass = baseMass + addedMass;
+            newState.fuelTemperature = (baseMass * newState.fuelTemperature + addedMass * i.temperature)/finalMass;
+            newState.fuelVolume = getVolume(finalMass, newState.fuelTemperature);
         }
     }
 
-    public void Run(){
-        int iteration = 0;
-        newFluidVolume = startFluidVolume;
-        newFluidTemp = startFluidTemp;
-        newAmbientTemp = ambientTempList.get(iteration);
-
-        while(true){
-            iteration++;
-
-            // Zaktualizowanie danych wyjsciowych
-            outputFluidTemps.add(newFluidTemp);
-            outputFluidTemps.add(newFluidVolume);
-
-            // Zaktualizowanie temperatury otoczenia
-            oldAmbientTemp = newAmbientTemp;
-            newAmbientTemp = ambientTempList.get(iteration);
-
-            //Zaktualizowanie temperatury pojemnika
-            containerTemp = calculateContainerTemp(newAmbientTemp, containerTemp);
-
-            // Obliczenie nowej temperatury cieczy
-            oldFluidTemp = newFluidTemp;
-            double currentFluidMass = calculateFluidMass();
-            newFluidTemp = calculateFluidTemp(containerTemp, newFluidTemp, currentFluidMass, molarHeatCapacity);
-
-            //Obliczenie nowej objetosci cieczy
-            newFluidVolume = calculateFluidVolume(newFluidVolume, newFluidTemp, oldFluidTemp, thermalExpansionCoefficient);
+    private void processOutflows()
+    {
+        for(Iterator<FuelOutflow> iter = outflows.listIterator(); iter.hasNext();)
+        {
+            FuelOutflow o = iter.next();
+            double removedV = o.litresPerSecond * dt;
+            o.limitVolume -= removedV;
+            if(o.limitVolume <= 0)
+            {
+                removedV += o.limitVolume;
+                iter.remove();
+            }
+            newState.fuelVolume -= removedV;
         }
-
-    }
-
-    // Obliczenie temperatury cieczy
-    private double calculateFluidTemp(double _containerTemp,
-                                      double _currentFluidTemp,
-                                      double _currentFluidMass,
-                                      double _molarHeatCapacity){
-        // Ze wzoru na wnikanie ciepła i wzoru na energie ogrzewania (ochładzania) ciała
-        double _fluidTempDelta =
-                (fluidNusseltNumber* (_containerTemp - _currentFluidTemp) * containerArea) /(_currentFluidMass *_molarHeatCapacity);
-        if(_currentFluidTemp > _containerTemp){
-            return _currentFluidTemp - _fluidTempDelta;
+        if(newState.fuelVolume < 0)
+        {
+            newState.fuelVolume = 0;
         }
-        else if (_currentFluidTemp < _containerTemp){
-            return _fluidTempDelta - _currentFluidTemp;
-        }
-        else return _currentFluidTemp;
+        //TODO: lepsza obsługa tego że jest pusty
     }
 
-    //Obliczenie objetosci cieczy
-    private double calculateFluidVolume(double _fluidVolume,
-                                        double _newFluidTemp,
-                                        double _oldFluidTemp,
-                                        double _coefficient ){
-        return _fluidVolume * (1 + _coefficient * (_newFluidTemp - _oldFluidTemp));
+    private void processHeatExchange()
+    {
+        //TODO: poprawić skopany wzór w diagramie
+        double mass = getMass(newState.fuelVolume, newState.fuelTemperature);
+        double kelvinPerSecond = properties.tankHeatConductionCoefficient *
+                (newState.ambientTemperature - newState.fuelTemperature) * properties.tankSurfaceArea  / (mass * properties.fuelHeatCapacity);
+        newState.fuelTemperature += kelvinPerSecond * dt;
+        newState.fuelVolume = getVolume (mass, newState.fuelTemperature);
     }
 
-    // Obliczenie temperatury pojemnika
-    private double calculateContainerTemp(double _ambientTemp,
-                                          double _currentContainerTemp){
-        // TO DO..
-        return 0;
+    private double getMass(double volume, double temperature)
+    {
+        double expansion = properties.fuelThermalExpansionCoefficient * (temperature - properties.fuelDensityBaseTemperature);
+        double vInBaseTemperature = volume /( 1 + expansion);
+        return properties.fuelDensity * vInBaseTemperature;
     }
 
-    private double calculateFluidMass(){
-        // TO DO..
-        return 0;
+    private double getVolume(double mass, double temperature)
+    {
+        double expansion = properties.fuelThermalExpansionCoefficient * (temperature - properties.fuelDensityBaseTemperature);
+        double vInBaseTemperature = mass / properties.fuelDensity;
+        return vInBaseTemperature * (1 + expansion);
+    }
+
+    private void calculateFluidVolume()
+    {
+        //return _fluidVolume * (1 + _coefficient * (_newFluidTemp - _oldFluidTemp));
     }
 }
