@@ -72,7 +72,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="10"/>
+              <text value="2000"/>
             </properties>
           </component>
           <component id="abc92" class="javax.swing.JLabel">
@@ -90,7 +90,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="20"/>
+              <text value="10"/>
             </properties>
           </component>
           <component id="b668a" class="javax.swing.JLabel">
@@ -98,7 +98,7 @@
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="tankHeatConductionCoefficient"/>
+              <text value="tankHeatConductionCoefficient[W/m^2 K]"/>
             </properties>
           </component>
           <component id="19838" class="javax.swing.JTextField" binding="tankHeatConductionCoefficientText">
@@ -108,7 +108,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="0.0001"/>
+              <text value="58"/>
             </properties>
           </component>
           <component id="5042c" class="javax.swing.JLabel">
@@ -116,7 +116,7 @@
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="fuelThermalExpansionCoefficient"/>
+              <text value="fuelThermalExpansionCoefficient [1/K]"/>
             </properties>
           </component>
           <component id="91ba1" class="javax.swing.JTextField" binding="fuelThermalExpansionCoefficientText">
@@ -126,7 +126,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="0.05"/>
+              <text value="0.00095"/>
             </properties>
           </component>
           <component id="1ede9" class="javax.swing.JLabel">
@@ -134,7 +134,7 @@
               <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="fuelHeatCapacity [C]"/>
+              <text value="fuelHeatCapacity [J/kgK]"/>
             </properties>
           </component>
           <component id="989d5" class="javax.swing.JTextField" binding="fuelHeatCapacityText">
@@ -144,7 +144,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="1"/>
+              <text value="1670"/>
             </properties>
           </component>
           <component id="3ec5e" class="javax.swing.JLabel">
@@ -162,7 +162,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="0.7"/>
+              <text value="0.83"/>
             </properties>
           </component>
           <component id="f91ff" class="javax.swing.JLabel">
@@ -198,7 +198,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="1"/>
+              <text value="5"/>
             </properties>
           </component>
           <component id="1b8c6" class="javax.swing.JLabel">
@@ -216,7 +216,7 @@
               </grid>
             </constraints>
             <properties>
-              <text value="3"/>
+              <text value="900"/>
             </properties>
           </component>
           <component id="3f366" class="javax.swing.JLabel">

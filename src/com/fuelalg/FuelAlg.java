@@ -1,22 +1,13 @@
 
-        package com.fuelalg;
+package com.fuelalg;
 
-        import java.util.ArrayList;
-        import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Kuba on 22.06.2017.
  */
 public class FuelAlg {
-
-    //private ArrayList<Double> ambientTempList;
-    //private double startFluidTemp;
-    //private double startFluidVolume;
-    //private double newFluidVolume;
-    //private double newFluidTemp;
-    //private double newAmbientTemp;
-    //private double oldAmbientTemp;
-    //private double oldFluidTemp;
 
     public double getDt() {
         return dt;
@@ -89,6 +80,9 @@ public class FuelAlg {
             newState.fuelTemperature = (baseMass * newState.fuelTemperature + addedMass * i.temperature)/finalMass;
             newState.fuelVolume = getVolume(finalMass, newState.fuelTemperature);
         }
+        if(newState.fuelVolume > properties.tankVolume){
+            newState.fuelVolume = properties.tankVolume;
+        }
     }
 
     private void processOutflows()
@@ -114,12 +108,16 @@ public class FuelAlg {
 
     private void processHeatExchange()
     {
+        if(newState.fuelVolume == 0) return;
         //TODO: poprawić skopany wzór w diagramie
         double mass = getMass(newState.fuelVolume, newState.fuelTemperature);
         double kelvinPerSecond = properties.tankHeatConductionCoefficient *
                 (newState.ambientTemperature - newState.fuelTemperature) * properties.tankSurfaceArea  / (mass * properties.fuelHeatCapacity);
         newState.fuelTemperature += kelvinPerSecond * dt;
         newState.fuelVolume = getVolume (mass, newState.fuelTemperature);
+        if(newState.fuelVolume > properties.tankVolume){
+            newState.fuelVolume = properties.tankVolume;
+        }
     }
 
     private double getMass(double volume, double temperature)
@@ -134,10 +132,5 @@ public class FuelAlg {
         double expansion = properties.fuelThermalExpansionCoefficient * (temperature - properties.fuelDensityBaseTemperature);
         double vInBaseTemperature = mass / properties.fuelDensity;
         return vInBaseTemperature * (1 + expansion);
-    }
-
-    private void calculateFluidVolume()
-    {
-        //return _fluidVolume * (1 + _coefficient * (_newFluidTemp - _oldFluidTemp));
     }
 }

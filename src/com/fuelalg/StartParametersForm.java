@@ -5,6 +5,9 @@ import java.awt.event.*;
 
 /**
  * Created by maciej on 19.08.17.
+ * Wartości domyślne dla niektórych parametrów:
+ * tankHeatConductionCoefficientText - 58 (dla stali - wikipedia)
+ * fuelHeatCapacity - 2700 (narazie dla ropy naftowej)
  */
 public class StartParametersForm extends JFrame{
     private JPanel contentPane;
@@ -80,7 +83,6 @@ public class StartParametersForm extends JFrame{
         form.pack();
         form.setVisible(true);
 
-        System.out.println(fuelTemperatureText);
 
         dispose();
         }
