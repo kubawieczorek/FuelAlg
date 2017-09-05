@@ -1,8 +1,12 @@
 package com.fuelalg;
 
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.Date;
 
 /**
@@ -21,6 +25,8 @@ public class SimulationForm extends JFrame{
     private JButton addInflowButton;
     private JButton addOutflowButton;
     private JLabel working;
+    private JButton fuelTemperatureChartButton;
+    private JButton fuelVolumeChartButton;
 
     private boolean isRunning = true;
     private FuelAlg fuelAlg;
@@ -48,6 +54,12 @@ public class SimulationForm extends JFrame{
             }
         });
         timer.start();
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(WindowEvent winEvt) {
+                fuelAlg.close();
+            }
+        });
 
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -77,6 +89,17 @@ public class SimulationForm extends JFrame{
         addOutflowButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onAddOutflow();
+            }
+        });
+
+        fuelTemperatureChartButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onShowFuelTempChart();
+            }
+        });
+        fuelVolumeChartButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onShowFuelVolumeChart();
             }
         });
 
@@ -150,6 +173,28 @@ public class SimulationForm extends JFrame{
         int p = (int)(fuelAlg.getFuelVolume() / prop.tankVolume * 1000);
         volumeBar.setValue(p);
         //volumeBar.setString(String.valueOf(fuelAlg.getFuelVolume()));
+    }
+
+    private void onShowFuelTempChart(){
+        ChartData data = fuelAlg.getFuelTempChartData();
+        JFreeChart chart = data.createChart("Fuel temperature in time", "time[s]", "temperature[Celsius]");
+        ChartPanel cp = new ChartPanel(chart);
+        JFrame frame = new JFrame("Fuel temperature in time");
+        frame.setSize(600, 400);
+       // frame.setDefaultCloseOperation(JFrame.);
+        frame.setVisible(true);
+        frame.getContentPane().add(cp);
+    }
+
+    private void onShowFuelVolumeChart(){
+        ChartData data = fuelAlg.getFuelVolumeChartData();
+        JFreeChart chart = data.createChart("Fuel volume in time", "time[s]", "volume[l]");
+        ChartPanel cp = new ChartPanel(chart);
+        JFrame frame = new JFrame("Fuel volume in time");
+        frame.setSize(600, 400);
+        // frame.setDefaultCloseOperation(JFrame.);
+        frame.setVisible(true);
+        frame.getContentPane().add(cp);
     }
 
 }

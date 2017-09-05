@@ -18,8 +18,13 @@ public class FuelAlg {
     }
     //krok symulacji w sekundach
     private double dt = 0.1;
+    private double time = 0.0;
+    private int iterations = 0;
 
     private Properties properties;
+    private FileData fileData;
+    private ChartData fuelTempChart;
+    private ChartData fuelVolumeChart;
     private SimulationState currentState;
     private SimulationState newState;
     public ArrayList<FuelInflow> inflows;
@@ -27,6 +32,10 @@ public class FuelAlg {
 
     public FuelAlg(SimulationState startState,  Properties constantProperties)
     {
+        fileData = new FileData();
+        fileData.prepareFile();
+        fuelTempChart = new ChartData();
+        fuelVolumeChart = new ChartData();
         startState.verify();
         constantProperties.verify();
         currentState = startState.clone();
@@ -49,6 +58,12 @@ public class FuelAlg {
         o.verify();
         outflows.add(o);
     }
+    public ChartData getFuelTempChartData(){
+        return fuelTempChart;
+    }
+    public ChartData getFuelVolumeChartData(){
+        return fuelTempChart;
+    }
 
     public double getFuelVolume(){ return currentState.fuelVolume; }
     public double getFuelTemperature(){ return currentState.fuelTemperature;}
@@ -56,11 +71,20 @@ public class FuelAlg {
 
     public void doIteration()
     {
+        time += 0.1;
+        iterations++;
+        if(iterations >= 10){
+            fuelTempChart.addData(Math.round(time), newState.fuelTemperature);
+            fuelVolumeChart.addData(Math.round(time), newState.fuelVolume);
+            fileData.saveData(Math.round(time), newState);
+            iterations = 0;
+        }
         processInflows();
         processOutflows();
         processHeatExchange();
         currentState = newState;
         newState = currentState.clone();
+
     }
 
     private void processInflows()
@@ -133,4 +157,9 @@ public class FuelAlg {
         double vInBaseTemperature = mass / properties.fuelDensity;
         return vInBaseTemperature * (1 + expansion);
     }
+
+    public void close(){
+        fileData.close();
+    }
+
 }
