@@ -62,7 +62,7 @@ public class FuelAlg {
         return fuelTempChart;
     }
     public ChartData getFuelVolumeChartData(){
-        return fuelTempChart;
+        return fuelVolumeChart;
     }
 
     public double getFuelVolume(){ return currentState.fuelVolume; }

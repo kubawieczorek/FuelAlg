@@ -33,7 +33,6 @@ public class SimulationForm extends JFrame{
     private JButton addOutflowButton;
     private JLabel working;
     private JButton fuelTemperatureChartButton;
-    private JButton fuelVolumeChartButton;
     private JButton saveCsvButton;
 
     private boolean isRunning = true;
@@ -103,11 +102,6 @@ public class SimulationForm extends JFrame{
         fuelTemperatureChartButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onShowFuelTempChart();
-            }
-        });
-        fuelVolumeChartButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onShowFuelVolumeChart();
             }
         });
         saveCsvButton.addActionListener(new ActionListener() {
@@ -187,23 +181,12 @@ public class SimulationForm extends JFrame{
     }
 
     private void onShowFuelTempChart(){
-        ChartData data = fuelAlg.getFuelTempChartData();
-        JFreeChart chart = data.createChart("Fuel temperature in time", "time[s]", "temperature[Celsius]");
+        ChartData data1 = fuelAlg.getFuelTempChartData();
+        ChartData data2 = fuelAlg.getFuelVolumeChartData();
+        JFreeChart chart = ChartData.createChart("time[s]", "temperature[Celsius]","volume[l]", "Fuel temperature/volume", "Fuel temperature", "Fuel volume",data1, data2 );
         ChartPanel cp = new ChartPanel(chart);
-        JFrame frame = new JFrame("Fuel temperature in time");
-        frame.setSize(600, 400);
-       // frame.setDefaultCloseOperation(JFrame.);
-        frame.setVisible(true);
-        frame.getContentPane().add(cp);
-    }
-
-    private void onShowFuelVolumeChart(){
-        ChartData data = fuelAlg.getFuelVolumeChartData();
-        JFreeChart chart = data.createChart("Fuel volume in time", "time[s]", "volume[l]");
-        ChartPanel cp = new ChartPanel(chart);
-        JFrame frame = new JFrame("Fuel volume in time");
-        frame.setSize(600, 400);
-        // frame.setDefaultCloseOperation(JFrame.);
+        JFrame frame = new JFrame("Fuel temperature/volume in time");
+        frame.setSize(1200, 800);
         frame.setVisible(true);
         frame.getContentPane().add(cp);
     }
