@@ -4,6 +4,10 @@ jfreechart-1.0.19
 .idea/workspace.xml
 out
 out/production/FuelAlg/com/fuelalg/FuelAlg.class
-out/production/FuelAlg/com/fuelalg/FuelAlg.class
+out/production/FuelAlg/com/fuelalg/Main.class
 FuelAlg.iml
 .idea/libraries/jfreechart_1_0_19.xml
+.idea/workspace.xml
+FuelAlg.iml
+data.csv
+FuelAlg.iml

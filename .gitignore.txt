@@ -63,4 +63,6 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 
+/jfreechart-1.0.19/
+
 # End of https://www.gitignore.io/api/intellij
