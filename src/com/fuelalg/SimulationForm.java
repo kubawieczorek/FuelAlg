@@ -4,9 +4,16 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 
 /**
@@ -27,6 +34,7 @@ public class SimulationForm extends JFrame{
     private JLabel working;
     private JButton fuelTemperatureChartButton;
     private JButton fuelVolumeChartButton;
+    private JButton saveCsvButton;
 
     private boolean isRunning = true;
     private FuelAlg fuelAlg;
@@ -101,6 +109,9 @@ public class SimulationForm extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 onShowFuelVolumeChart();
             }
+        });
+        saveCsvButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {  onSaveCsv(); }
         });
 
         volumeBar.setMaximum(1000);
@@ -195,6 +206,27 @@ public class SimulationForm extends JFrame{
         // frame.setDefaultCloseOperation(JFrame.);
         frame.setVisible(true);
         frame.getContentPane().add(cp);
+    }
+
+    private void onSaveCsv()
+    {
+        JFileChooser fc = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("csv files", "csv");
+        fc.setFileFilter(filter);
+        fc.setSelectedFile(new File("simulationLog.csv"));
+        int res = fc.showSaveDialog(this);
+        if(res == JFileChooser.APPROVE_OPTION){
+            fuelAlg.flush();
+            File f = fc.getSelectedFile();
+            try {
+                Files.copy(Paths.get("data.csv"), Paths.get(f.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "error " + e.getMessage());
+                e.printStackTrace();
+            }
+        }else{
+            System.out.println("canceled");
+        }
     }
 
 }

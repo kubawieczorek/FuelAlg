@@ -24,4 +24,5 @@ public class FileData {
     public void close(){
         out.close();
     }
+    public void flush() {out.flush();}
 }

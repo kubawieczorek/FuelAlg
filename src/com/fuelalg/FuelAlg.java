@@ -162,4 +162,8 @@ public class FuelAlg {
         fileData.close();
     }
 
+    public void flush(){
+        fileData.flush();
+    }
+
 }
