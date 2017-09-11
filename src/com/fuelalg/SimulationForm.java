@@ -134,9 +134,9 @@ public class SimulationForm extends JFrame{
     {
         try{
             FuelInflow f = new FuelInflow();
-            f.litresPerSecond = Double.parseDouble(JOptionPane.showInputDialog( "litersPersecond:", 1));
-            f.limitVolume = Double.parseDouble(JOptionPane.showInputDialog( "limitVolume:", 1));
-            f.temperature = Double.parseDouble(JOptionPane.showInputDialog( "temperature:", 1));
+            f.litresPerSecond = Double.parseDouble(JOptionPane.showInputDialog( "Inflow speed (liters/second):", 1));
+            f.limitVolume = Double.parseDouble(JOptionPane.showInputDialog( "Outflow max volume (liters):", 1));
+            f.temperature = Double.parseDouble(JOptionPane.showInputDialog( "Fuel temperature (C):", 1));
             fuelAlg.addInflow(f);
             updateData();
         }
@@ -154,8 +154,8 @@ public class SimulationForm extends JFrame{
     {
         try{
             FuelOutflow f = new FuelOutflow();
-            f.litresPerSecond = Double.parseDouble(JOptionPane.showInputDialog( "litersPersecond:", 1));
-            f.limitVolume = Double.parseDouble(JOptionPane.showInputDialog( "limitVolume:", 1));
+            f.litresPerSecond = Double.parseDouble(JOptionPane.showInputDialog( "Outflow speed (liters/second):", 1));
+            f.limitVolume = Double.parseDouble(JOptionPane.showInputDialog( "Outflow max volume (liters):", 1));
             fuelAlg.addOutflow(f);
             updateData();
         }

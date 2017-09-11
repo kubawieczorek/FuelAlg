@@ -121,7 +121,6 @@ public class FuelAlg {
         {
             newState.fuelVolume = 0;
         }
-        //TODO: lepsza obsługa tego że jest pusty
     }
 
     private void processHeatExchange()
