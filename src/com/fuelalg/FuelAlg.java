@@ -71,17 +71,11 @@ public class FuelAlg {
 
     public void doIteration()
     {
-        time += 0.1;
-        iterations++;
-        if(iterations >= 10){
-            fuelTempChart.addData(Math.round(time), newState.fuelTemperature);
-            fuelVolumeChart.addData(Math.round(time), newState.fuelVolume);
-            fileData.saveData(Math.round(time), newState);
-            iterations = 0;
-        }
         processInflows();
         processOutflows();
         processHeatExchange();
+        logData();
+
         currentState = newState;
         newState = currentState.clone();
 
@@ -141,6 +135,18 @@ public class FuelAlg {
         newState.fuelVolume = getVolume (mass, newState.fuelTemperature);
         if(newState.fuelVolume > properties.tankVolume){
             newState.fuelVolume = properties.tankVolume;
+        }
+    }
+
+    private void logData()
+    {
+        time += dt;
+        iterations++;
+        if(iterations >= 10){
+            fuelTempChart.addData(Math.round(time), newState.fuelTemperature);
+            fuelVolumeChart.addData(Math.round(time), newState.fuelVolume);
+            fileData.saveData(Math.round(time), newState);
+            iterations = 0;
         }
     }
 
